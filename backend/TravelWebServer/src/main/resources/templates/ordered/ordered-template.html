@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Xác nhận tài khoản</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *{
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        body{
+            width: 100%;
+            height: fit-content;
+        }
+
+        .container {
+            width: 100%;
+            height: fit-content;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #f9f9f9;
+        }
+        
+        .container .child-container{
+            height: 90%;
+            width: 100%;
+            background-color: #fff;
+            padding: 20px
+        }
+        .background{
+            padding-bottom: 20px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        p {
+            font-size: 16px;
+            color: #333;
+            margin: 0;
+        }
+
+        table {
+            font-size: 16px;
+        }
+
+        .order .title {
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .site-name{
+            text-decoration: none;
+            font-weight: bolder;
+            color: #c7923e !important;
+            font-size: 16px;
+        }
+
+        .thank {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+    <body>
+        <div class="container">
+            <div class="child-container">
+                <h2>Hi ${name},</h2>
+                <p style="margin-bottom: 10px;">Cảm ơn đã sử dụng dịch vụ của chúng tôi, vé của bạn:</p>
+                <div class="order" style="padding:20px;border:1px solid #e0e0e0;background-color:#fff;max-width:600px;margin:0 auto;border-radius: 4px;">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td colspan="2">
+                                <div class="tour-img" style="width: 100%; height: 150px; border-radius: 6px; overflow: hidden;">
+                                    <img style="width: 100%; height: 100%; object-fit: cover;" src="${tourImage}" alt="image">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h2>${tourName}</h2>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td>
+                                            <tr>
+                                                <td>
+                                                    <span style="font-style: italic;"><b>Ngày khởi hành:</b></span> 
+                                                </td>
+                                                <td style="text-align: end; font-style: italic;">
+                                                    ${departDate}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span style="font-style: italic;"><b>Ngày kết thúc:</b></span> 
+                                                </td>
+                                                <td style="text-align: end; font-style: italic;">
+                                                    ${endDate}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span style="font-style: italic;"><b>Điểm xuất phát:</b></span> 
+                                                </td>
+                                                <td style="text-align: end; font-style: italic;">
+                                                    ${depart}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <span style="font-style: italic;"><b>Điểm đến:</b></span> 
+                                                </td>
+                                                <td style="text-align: end; font-style: italic;">
+                                                    ${destination}
+                                                </td>
+                                            </tr>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding-top: 20px;" colspan="2">
+                                <hr>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h3 style="color: #c7923e;">Mã vé: ${orderId}</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span><b>Ngày đặt:</b></span> 
+                            </td>
+                            <td style="text-align: end;">
+                                <span>${orderDate}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span><b>Người lớn:</b></span> 
+                            </td>
+                            <td style="text-align: end;">
+                                <span>${adults} x <span style="color: #c7923e; font-weight: bold;">${adultPrice} VNĐ</span></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span><b>Trẻ em:</b></span> 
+                            </td>
+                            <td style="text-align: end;">
+                                <span>${children} x <span style="color: #c7923e; font-weight: bold;">${childrenPrice} VNĐ</span></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span><b>Phương thức thanh toán:</b></span> 
+                            </td>
+                            <td style="text-align: end;">
+                                <span style="color: #c7923e;">${method}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span><b>Trạng thái:</b></span> 
+                            </td>
+                            <td style="text-align: end;">
+                                <span style="color: #2b911c;"><b>ĐÃ THANH TOÁN</b></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="padding-top: 20px;"><hr></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h3>Thông tin cá nhân</h3> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="title">Họ và tên:</td>
+                            <td style="text-align: end;">${name}</td>
+                        </tr>
+                        <tr>
+                            <td class="title">Số điện thoại:</td>
+                            <td style="text-align: end;">${phone}</td>
+                        </tr>
+                        <tr>
+                            <td class="title">Email:</td>
+                            <td style="text-align: end;">${email}</td>
+                        </tr>
+                        <tr>
+                            <td class="title" style="width: 80px;">Địa chỉ:</td>
+                            <td style="text-align: end;">${address}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="padding-top: 20px;"><hr></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h3>Dịch vụ thêm</h3> 
+                            </td>
+                        </tr>
+                        <#if hotelName != "null">
+                            <tr>
+                                <td colspan="2">
+                                    <table style="width: 100%;">
+                                        <tr>
+                                            <td style="width: 100px;">
+                                                <img style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px;" src="${hotelImg}"alt="hotel">
+                                            </td>
+                                            <td style="text-align: end;">
+                                                <p><b>${hotelName}</b></p>
+                                                <p style="margin-top: 10px;"><span style="color: #c7923e;"><b>${hotelPrice} VNĐ</b></span></p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </#if>
+                        <tr>
+                            <td colspan="2" style="padding-top: 20px;"><hr></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <h3>Yêu cầu đặc biệt</h3> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">${specialRequest}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align: end;">
+                                <h3 style="color: #c7923e">Tổng cộng: <span style="color: #000000; font-size: 20px;">${amount}VNĐ</span></h3>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <p class="thank">Best regards,</p>
+                <a class="site-name" href="${clientHost}">Travel VN</a>
+            </div>
+        </div>
+    </body>
+</html>

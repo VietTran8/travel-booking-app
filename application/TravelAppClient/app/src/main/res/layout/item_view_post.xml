@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="10dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        app:cardCornerRadius="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/imgPostThumbnail"
+            android:layout_width="100dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/explore_intro"
+            android:layout_height="80dp"/>
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginStart="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.cardview.widget.CardView
+            app:cardCornerRadius="200dp"
+            android:outlineAmbientShadowColor="@color/transparent"
+            android:outlineSpotShadowColor="@color/transparent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txtPostType"
+                android:background="@color/light_gray"
+                android:paddingTop="5dp"
+                android:textColor="@color/white"
+                android:paddingBottom="5dp"
+                android:paddingEnd="10dp"
+                android:paddingStart="10dp"
+                android:textSize="8sp"
+                android:fontFamily="@font/alata"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kinh nghiệm du lịch"/>
+        </androidx.cardview.widget.CardView>
+        <TextView
+            android:id="@+id/txtPostTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:fontFamily="@font/alata"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:text="Đi du lịch Đà Nẵng chỉ với 500k? Đi du lịch Đà Nẵng chỉ với 500k? Đi du lịch Đà Nẵng chỉ với 500k? Đi du lịch Đà Nẵng chỉ với 500k?"/>
+        <TextView
+            android:id="@+id/txtAuthor"
+            android:text="Phan Hoàn Việt"
+            android:textSize="10sp"
+            android:layout_marginTop="5dp"
+            android:textColor="#8F8F8F"
+            android:fontFamily="@font/alata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+</LinearLayout>

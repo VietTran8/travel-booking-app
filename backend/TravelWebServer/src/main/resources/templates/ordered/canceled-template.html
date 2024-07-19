@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Xác nhận tài khoản</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *{
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        body{
+            width: 100%;
+            height: fit-content;
+        }
+
+        .container {
+            width: 100%;
+            height: fit-content;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #f9f9f9;
+        }
+        
+        .container .child-container{
+            height: 90%;
+            width: 100%;
+            background-color: #fff;
+            padding: 20px
+        }
+        .background{
+            padding-bottom: 20px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+        }
+
+        .background img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        p {
+            font-size: 16px;
+            color: #333;
+            margin: 0;
+        }
+
+        .site-name{
+            text-decoration: none;
+            font-weight: bolder;
+            color: #c7923e !important;
+            font-size: 16px;
+        }
+
+        .thank {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+    <body>
+        <div class="container">
+            <div class="child-container">
+                <div class="background">
+                    <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80">
+                </div>
+                <h2>Hi ${name},</h2>
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="text-align: center;">
+                            <p style="margin-bottom: 10px;">Chúng tôi đã thực hiện yêu cầu hủy đặt tour (<span style="color: #c7923e;">mã vé: ${orderId}</span>) của quý khách và sẽ tiến hành hoàn tiền lại cho quý khách trong thời gian sớm nhất! (Trong trường hợp quý khách đã thanh toán)</p>
+                            <i>Mọi thông tin vui lòng liên hệ hotline: 1900.8910</i>
+                        </td>
+                    </tr>
+                </table>
+                <p class="thank">Best regards,</p>
+                <a class="site-name" href="${clientHost}">Travel VN</a>
+            </div>
+        </div>
+    </body>
+</html>

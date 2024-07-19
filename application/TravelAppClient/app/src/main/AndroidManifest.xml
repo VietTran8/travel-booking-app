@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <permission android:name="${applicationId}.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/ic_app_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/logo"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.TravelApplication"
+        android:usesCleartextTraffic="true"
+        android:name=".utils.ApplicationUtil"
+        tools:targetApi="31">
+
+        <activity
+            android:name=".ui.activities.ConfirmOrderActivity" android:exported="false"/>
+        <activity
+            android:name=".ui.activities.CheckOutActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.main.travelApp.action.PAYMENT_RESULT" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activities.TermAndServiceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.UserOrdersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.LoginHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.EditPersonalInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.SelectTicketActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.SupportActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.activities.RatingActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.activities.TourDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.PostDetailActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activities.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.LoginActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+    </application>
+
+</manifest>
