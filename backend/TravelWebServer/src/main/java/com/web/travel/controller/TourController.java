@@ -2,23 +2,23 @@ package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.payload.request.TourFilter;
-import com.web.travel.service.TourService;
+import com.web.travel.service.impl.TourServiceImpl;
+import com.web.travel.service.interfaces.TourService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/tour")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class TourController {
-    @Autowired
-    TourService tourService;
+    private final TourService tourService;
+
     @GetMapping("/all")
     public Object getAll(
             @RequestParam(value = "page", required =false, defaultValue = "1") Integer page,

@@ -1,28 +1,23 @@
 package com.web.travel.mapper.request;
 
 import com.web.travel.dto.request.common.RateReqDTO;
-import com.web.travel.dto.request.common.RateUpdateReqDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.model.Rate;
-import com.web.travel.service.BlogService;
-import com.web.travel.service.TourService;
-import com.web.travel.service.UserService;
+import com.web.travel.service.impl.TourServiceImpl;
+import com.web.travel.service.impl.UserServiceImpl;
+import com.web.travel.service.interfaces.BlogService;
+import com.web.travel.service.interfaces.TourService;
+import com.web.travel.service.interfaces.UserService;
 import com.web.travel.utils.DateHandler;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.Date;
-
 @Component
+@AllArgsConstructor
 public class RateReqMapper implements Mapper {
-    @Autowired
     private UserService userService;
-    @Autowired
     private TourService tourService;
-    @Autowired
     private BlogService blogService;
 
     @Override

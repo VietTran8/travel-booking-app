@@ -1,4 +1,4 @@
-package com.web.travel.service;
+package com.web.travel.service.impl;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.admin.tour.TourAddingDTO;
@@ -9,7 +9,6 @@ import com.web.travel.dto.response.TourGeneralResDTO;
 import com.web.travel.mapper.Mapper;
 import com.web.travel.mapper.request.TourAddingReqMapper;
 import com.web.travel.mapper.request.TourParagraphsAddingMapper;
-import com.web.travel.mapper.response.DestinationBlogResMapper;
 import com.web.travel.mapper.response.TourDetailResMapper;
 import com.web.travel.mapper.response.TourGeneralResMapper;
 import com.web.travel.model.*;
@@ -23,9 +22,11 @@ import com.web.travel.repository.custom.CustomTourRepository;
 import com.web.travel.repository.custom.enumeration.ESortType;
 import com.web.travel.service.cloudinary.FileUploadServiceImpl;
 import com.web.travel.service.cloudinary.FilesValidation;
+import com.web.travel.service.interfaces.TourService;
+import com.web.travel.service.interfaces.UserService;
 import com.web.travel.utils.DateHandler;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -37,31 +38,22 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
-public class TourService {
-    @Autowired
-    TourRepository tourRepository;
-    @Autowired
-    TourDateRepository tourDateRepository;
-    @Autowired
-    ParagraphRepository paragraphRepository;
-    @Autowired
-    TourBlogRepository tourBlogRepository;
-    @Autowired
-    CustomTourRepository customTourRepository;
-    @Autowired
-    OrderRepository orderRepository;
-    @Autowired
-    FileUploadServiceImpl fileUploadService;
-    @Autowired
-    UserService userService;
-    @Autowired
-    TourAddingReqMapper tourAddingRequestMapper;
-    @Autowired
-    BlogRepository blogRepository;
-    @Autowired
-    DestinationBlogRepository desRepository;
-    @Autowired
-    FilesValidation filesValidation;
+@RequiredArgsConstructor
+public class TourServiceImpl implements TourService {
+    private final TourRepository tourRepository;
+    private final TourDateRepository tourDateRepository;
+    private final ParagraphRepository paragraphRepository;
+    private final TourBlogRepository tourBlogRepository;
+    private final CustomTourRepository customTourRepository;
+    private final OrderRepository orderRepository;
+    private final FileUploadServiceImpl fileUploadService;
+    private final UserService userService;
+    private final TourAddingReqMapper tourAddingRequestMapper;
+    private final BlogRepository blogRepository;
+    private final DestinationBlogRepository desRepository;
+    private final FilesValidation filesValidation;
+
+    @Override
     public List<ListTourResDTO> getTourDTOListGroupByType(){
         List<ListTourResDTO> listTourResDTOS = new ArrayList<>();
         List<TourGeneralResDTO> list = new ArrayList<>();
@@ -122,6 +114,7 @@ public class TourService {
         return listTourResDTOS;
     }
 
+    @Override
     public Map<String, Object> getAllTour(int page, int limit){
         Map<String, Object> result = new HashMap<>();
         Page<Tour> tourPage = tourRepository.findAll(PageRequest.of(page, limit));
@@ -138,6 +131,7 @@ public class TourService {
         return result;
     }
 
+    @Override
     public ResDTO getTourResByNameOrDestination(String keyWord, int page, int limit){
         Page<Tour> foundTours = tourRepository.findByNameContainingOrDestinationContaining(keyWord, keyWord, PageRequest.of(page - 1, limit));
 
@@ -160,6 +154,7 @@ public class TourService {
         return resDTO;
     }
 
+    @Override
     public ResDTO getTourByFilter(TourFilter tourFilter){
         Map<String, Object> response = new HashMap<>();
 
@@ -193,10 +188,12 @@ public class TourService {
         return resDTO;
     }
 
+    @Override
     public Tour findTourById(Long id){
         return tourRepository.findById(id).orElse(null);
     }
 
+    @Override
     public List<TourGeneralResDTO> findTourByType(String type){
 
         return tourRepository.findByTourType(ETourType.valueOf(("type_" + type).toUpperCase())).stream()
@@ -209,9 +206,12 @@ public class TourService {
                 ).toList();
     }
 
+    @Override
     public long getCount(){
         return tourRepository.count();
     }
+
+    @Override
     public Object getResponseTourById(Principal principal, Long id){
         Tour tour = tourRepository.findById(id).orElse(null);
         if(tour != null && (tour.getIsRemoved() == null || !tour.getIsRemoved())){
@@ -271,6 +271,7 @@ public class TourService {
         return null;
     }
 
+    @Override
     public List<TourGeneralResDTO> getRelevantToursByDestination(String depart, String destination , int numberOfTour){
         List<TourGeneralResDTO> result;
         List<Tour> relevantTours = customTourRepository.getRelevantTourByDestination(depart, destination, numberOfTour);
@@ -323,6 +324,7 @@ public class TourService {
         }
     }
 
+    @Override
     public ResDTO add(TourAddingDTO tour, MultipartFile[] images){
         Mapper paraMapper = new TourParagraphsAddingMapper();
         Tour needAddTour = (Tour) tourAddingRequestMapper.mapToObject(tour);
@@ -377,6 +379,7 @@ public class TourService {
             );
     }
 
+    @Override
     public ResDTO updateTour(
             long id, TourAddingDTO tour, MultipartFile[] images
     ){
@@ -470,6 +473,7 @@ public class TourService {
         );
     }
 
+    @Override
     public Map<String, Object> adminGetAllTour(Principal principal, int page, int limit){
         Page<Tour> tour = tourRepository.findAll(PageRequest.of(page - 1, limit));
         List<TourDetailResDTO> tourDetailResDTOS = tour.get().filter(item -> (item.getIsRemoved() == null || !item.getIsRemoved()))
@@ -485,6 +489,7 @@ public class TourService {
         return response;
     }
 
+    @Override
     public ResDTO deleteTour(long id){
 
         AtomicReference<String> message = new AtomicReference<>("Không tìm thấy tour với id: " + id);
@@ -505,6 +510,7 @@ public class TourService {
         );
     }
 
+    @Override
     public ResDTO getTopDestinations(int top){
         ResDTO response = new ResDTO();
 
@@ -521,6 +527,7 @@ public class TourService {
         return response;
     }
 
+    @Override
     public ResDTO getTourDate(long tourId){
         Tour foundTour = findTourById(tourId);
         if(foundTour != null){
@@ -547,6 +554,7 @@ public class TourService {
                 null);
     }
 
+    @Override
     public ResDTO searchContainBlog(String key){
         List<Tour> tours = tourRepository.findByNameContainingOrDestinationContaining(key, key);
         List<DestinationBlog> blogs = desRepository.findByTitleContaining(key);
@@ -557,13 +565,7 @@ public class TourService {
                     return (TourGeneralResDTO) mapper.mapToDTO(tour);
                 }).toList();
 
-        List<DestinationBlogResDTO> blogDTOs = blogs.stream().map(blog -> {
-            Mapper mapper = new DestinationBlogResMapper();
-            DestinationBlogResDTO dto = (DestinationBlogResDTO) mapper.mapToDTO(blog);
-            Paragraph paragraph = blog.getBlog().getParagraphs().stream().toList().get(0);
-            dto.setDescription(paragraph.getContent());
-            return dto;
-        }).toList();
+        List<DestinationBlogResDTO> blogDTOs = BlogServiceImpl.mapToDtoList(blogs.stream());
 
         Map<String, Object> response = new HashMap<>();
         response.put("tours", tourDTOs);

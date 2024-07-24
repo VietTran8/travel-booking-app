@@ -1,9 +1,7 @@
-package com.web.travel.service;
+package com.web.travel.service.impl;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.LowLevelHttpRequest;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.web.travel.dto.ResDTO;
@@ -17,19 +15,20 @@ import com.web.travel.payload.request.ChangePasswordRequest;
 import com.web.travel.payload.request.LoginRequest;
 import com.web.travel.payload.request.SignupRequest;
 import com.web.travel.payload.response.SignInResponse;
-import com.web.travel.payload.response.MessageResponse;
 import com.web.travel.repository.RoleRepository;
 import com.web.travel.repository.UserRepository;
 import com.web.travel.security.jwt.JwtUtils;
 import com.web.travel.security.services.UserDetailsImpl;
-import com.web.travel.service.email.EmailService;
+import com.web.travel.service.interfaces.AuthService;
+import com.web.travel.service.interfaces.EmailService;
+import com.web.travel.service.interfaces.UserService;
 import com.web.travel.utils.DateHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.service.UADetectorServiceFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,26 +47,24 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class AuthService {
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RoleRepository roleRepository;
-    @Autowired
-    PasswordEncoder encoder;
-    @Autowired
-    JwtUtils jwtUtils;
-    @Autowired
-    EmailService emailService;
-    @Autowired
-    AuthenticationManager authenticationManager;
-    @Autowired
-    UserService userService;
+@RequiredArgsConstructor
+public class AuthServiceImpl implements AuthService {
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder encoder;
+    private final JwtUtils jwtUtils;
+    private final EmailService emailService;
+    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
     @Value("${travel.app.client.registration.google.client-id}")
     private String CLIENT_ID;
+
+    @Override
     public boolean userIsExistsByEmail(String email){
         return userRepository.existsByEmail(email);
     }
+
+    @Override
     public Map<String, Object> saveUser(SignupRequest signUpRequest){
         // Create new user's account
         User user = new User(signUpRequest.getFullName(),
@@ -105,6 +102,7 @@ public class AuthService {
         return result;
     }
 
+    @Override
     public ResDTO changePassword(Principal principal, ChangePasswordRequest request){
         if(principal != null){
             User foundUser = userRepository.findByEmail(principal.getName()).orElse(null);
@@ -138,6 +136,7 @@ public class AuthService {
         );
     }
 
+    @Override
     public ResDTO signIn(HttpServletRequest request, LoginRequest loginRequest){
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElse(null);
         if(user != null && user.getActive().equals(EUserStatus.STATUS_NOT_ACTIVATED)){
@@ -191,10 +190,12 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    @Override
     public boolean loginVerify(String token) {
         return jwtUtils.validateJwtToken(token);
     }
 
+    @Override
     public ResDTO resetPassword(String password, String token){
         String userEmail = getEmailFromTokenForReset(token);
         User user = userRepository.findByEmail(userEmail).orElse(null);
@@ -212,11 +213,13 @@ public class AuthService {
                 "");
     }
 
+    @Override
     public String getEmailFromToken(String token){
         token = parseToken(token);
         return jwtUtils.getEmailFromJwtToken(token);
     }
 
+    @Override
     public String getEmailFromTokenForReset(String token){
         return jwtUtils.getEmailFromJwtToken(token);
     }
@@ -228,23 +231,30 @@ public class AuthService {
         return null;
     }
 
+    @Override
     public String createResetPasswordToken(String email){
         return jwtUtils.generateJwtMailToken(email);
     }
+
+    @Override
     public boolean resetPasswordTokenIsValid(String token){
         return jwtUtils.validateJwtToken(token);
     }
+
+    @Override
     public String encodeResetPasswordToken(String token){
         Base64.Encoder encoder = Base64.getEncoder().withoutPadding();
         return encoder.encodeToString(token.getBytes());
     }
 
+    @Override
     public String decodeResetPasswordToken(String encodedToken){
         Base64.Decoder decoder = Base64.getDecoder();
         byte[] tokenBytes = decoder.decode(encodedToken);
         return new String(tokenBytes);
     }
 
+    @Override
     public String getUserFullNameFromEmail(String email){
         User user = userRepository.findByEmail(email).orElse(null);
         if(user != null){
@@ -253,10 +263,12 @@ public class AuthService {
         return "";
     }
 
+    @Override
     public String createConfirmationCodeToken(String email, String confirmationCode){
         return jwtUtils.generateJwtConfirmationToken(email, confirmationCode);
     }
 
+    @Override
     public String generateConfirmationCode(){
         SecureRandom rd = new SecureRandom();
         int min = 100000,
@@ -265,6 +277,7 @@ public class AuthService {
         return String.valueOf(randomNumber);
     }
 
+    @Override
     public ResDTO confirmationCodeValidate(String confirmCode, String token){
         String[] jwtSubjects = jwtUtils.getTokenSubject(token).split(":");
         String code = jwtSubjects[1];
@@ -307,6 +320,7 @@ public class AuthService {
         );
     }
 
+    @Override
     public ResDTO googleAuthWithTokenId(HttpServletRequest request, String tokenId) throws GeneralSecurityException, IOException {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
                 .setAudience(Collections.singletonList(CLIENT_ID))
@@ -365,6 +379,7 @@ public class AuthService {
         );
     }
 
+    @Override
     public ResDTO sendResetPasswordConfirmCode(String email){
         User foundUser = userRepository.findByEmail(email).orElse(null);
         if(foundUser != null){
@@ -388,6 +403,7 @@ public class AuthService {
         );
     }
 
+    @Override
     public ResDTO changePassword(String email, String newPassword){
         User foundUser = userRepository.findByEmail(email).orElse(null);
         if(foundUser != null){

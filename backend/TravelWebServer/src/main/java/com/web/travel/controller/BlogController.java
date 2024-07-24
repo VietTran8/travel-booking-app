@@ -1,9 +1,10 @@
 package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
-import com.web.travel.service.BlogService;
+import com.web.travel.service.impl.BlogServiceImpl;
+import com.web.travel.service.interfaces.BlogService;
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.coyote.Response;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/blog")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class BlogController {
-    @Autowired
-    BlogService blogService;
+    private final BlogService blogService;
 
     @GetMapping("/all")
     @CrossOrigin(origins = "*")

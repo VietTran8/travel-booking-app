@@ -9,7 +9,10 @@ import com.web.travel.model.Tour;
 import com.web.travel.model.TourDate;
 import com.web.travel.model.enums.ETourDateType;
 import com.web.travel.model.enums.ETourType;
-import com.web.travel.service.HotelService;
+import com.web.travel.service.impl.HotelServiceImpl;
+import com.web.travel.service.interfaces.HotelService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +21,10 @@ import java.util.Comparator;
 import java.util.List;
 
 @Component
+@AllArgsConstructor
 public class TourAddingReqMapper implements Mapper {
-    @Autowired
     private HotelService hotelService;
+
     @Override
     public Object mapToDTO(Object obj) {
         return null;

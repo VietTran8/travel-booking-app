@@ -1,12 +1,14 @@
-package com.web.travel.service;
+package com.web.travel.service.impl;
 
 import com.corundumstudio.socketio.SocketIOClient;
 import com.web.travel.model.Message;
 import com.web.travel.model.User;
+import com.web.travel.service.interfaces.MessageService;
+import com.web.travel.service.interfaces.SocketService;
+import com.web.travel.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
 import org.springframework.http.HttpEntity;
@@ -20,10 +22,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class SocketService {
+public class SocketServiceImpl implements SocketService {
     public final MessageService messageService;
     public final UserService userService;
 
+    @Override
     public void sendSocketMessage(SocketIOClient senderClient, Object message, Long room, boolean isOnConnected){
         senderClient
                 .getNamespace()
@@ -62,6 +65,7 @@ public class SocketService {
         sendNotification(senderClient, message);
     }
 
+    @Override
     public void sendNotification(SocketIOClient senderClient, Object message){
         senderClient.getNamespace()
                 .getAllClients()
@@ -72,6 +76,7 @@ public class SocketService {
                 });
     }
 
+    @Override
     public void sendGetAllMessages(SocketIOClient senderClient, Object message, Long room){
         senderClient
                 .getNamespace()
@@ -84,6 +89,7 @@ public class SocketService {
                 });
     }
 
+    @Override
     public void sendChangeEvent(SocketIOClient senderClient, Object message, Long room){
         senderClient.getNamespace()
                 .getRoomOperations(String.valueOf(room))
@@ -94,6 +100,7 @@ public class SocketService {
                 });
     }
 
+    @Override
     public void sendStopChangeEvent(SocketIOClient senderClient, Object message, Long room){
         senderClient.getNamespace()
                 .getRoomOperations(String.valueOf(room))
@@ -104,6 +111,7 @@ public class SocketService {
                 });
     }
 
+    @Override
     public void saveMessage(SocketIOClient senderClient, Message message){
         User user = userService.getUserObjectById(message.getUid());
         String avatar = "";
@@ -128,6 +136,7 @@ public class SocketService {
         sendSocketMessage(senderClient, savedMessage, message.getRoom(), false);
     }
 
+    @Override
     public void sendConnectedMessage(SocketIOClient senderClient, Long room) {
         List<Message> messages = messageService.getMessages(room);
         sendGetAllMessages(senderClient, messages, room);

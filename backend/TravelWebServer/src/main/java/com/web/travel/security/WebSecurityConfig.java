@@ -7,6 +7,7 @@ import com.web.travel.security.services.UserDetailsServiceImpl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,19 +32,18 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
-    @Autowired
-    private CustomSuccessHandler successHandler;
-    @Autowired
-    private CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final AuthEntryPointJwt unauthorizedHandler;
+    private final CustomSuccessHandler successHandler;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
-    public AuthTokenFilter authenticationJwtTokenFilter(){
+    AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
     }
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider =  new DaoAuthenticationProvider();
@@ -53,10 +53,12 @@ public class WebSecurityConfig {
 
         return authProvider;
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception{
         return authConfig.getAuthenticationManager();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
@@ -75,6 +77,7 @@ public class WebSecurityConfig {
 
         return source;
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
@@ -102,6 +105,7 @@ public class WebSecurityConfig {
                                     "/api/user/activity/clear",
                                     "/api/user/activity/delete/**").authenticated()
                             .requestMatchers(HttpMethod.GET,
+                                    "/api/test/**",
                                     "/api/order",
                                     "/api/user/login-history",
                                     "/api/user/activity",

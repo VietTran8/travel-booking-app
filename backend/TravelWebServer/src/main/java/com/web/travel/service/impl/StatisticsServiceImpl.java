@@ -1,11 +1,14 @@
-package com.web.travel.service;
+package com.web.travel.service.impl;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.admin.statistic.ProfitStatisticsResDTO;
 import com.web.travel.dto.request.admin.statistic.WeekStatisticDTO;
 import com.web.travel.model.enums.EOrderStatus;
 import com.web.travel.repository.OrderRepository;
+import com.web.travel.service.interfaces.StatisticsService;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +21,11 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class StatisticsService {
-    @Autowired
-    OrderRepository orderRepository;
+@RequiredArgsConstructor
+public class StatisticsServiceImpl implements StatisticsService {
+    private final OrderRepository orderRepository;
+
+    @Override
     public ResDTO getStatistics(){
         List<Date> lastDaysOfWeek = getLastWeekDays();
         List<Date> datesFromMondayToToday = getDatesFromMondayToToday();

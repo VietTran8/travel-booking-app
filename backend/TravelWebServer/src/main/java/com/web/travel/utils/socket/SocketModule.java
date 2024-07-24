@@ -1,16 +1,13 @@
 package com.web.travel.utils.socket;
 
 import com.corundumstudio.socketio.SocketIOServer;
-import com.corundumstudio.socketio.listener.ConnectListener;
 import com.corundumstudio.socketio.listener.DataListener;
-import com.corundumstudio.socketio.listener.DisconnectListener;
 import com.web.travel.model.Message;
 import com.web.travel.payload.request.JoinRoomRequest;
-import com.web.travel.service.SocketService;
+import com.web.travel.service.impl.SocketServiceImpl;
+import com.web.travel.service.interfaces.SocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -21,6 +18,7 @@ public class SocketModule {
     public SocketModule(SocketIOServer socketIOServer, SocketService socketService) {
         this.socketIOServer = socketIOServer;
         this.socketService = socketService;
+
         socketIOServer.addEventListener("join-room", JoinRoomRequest.class, onJoinRoomReceived());
         socketIOServer.addEventListener("send", Message.class, onChatReceived());
         socketIOServer.addEventListener("change", Message.class, onChangeReceived());

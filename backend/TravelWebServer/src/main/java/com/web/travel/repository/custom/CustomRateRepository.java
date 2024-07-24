@@ -18,6 +18,7 @@ import java.util.List;
 public class CustomRateRepository {
     @PersistenceContext
     EntityManager entityManager;
+
     public RateStatistic findRateStatisticByTour(Tour tour){
         CriteriaBuilder builder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Object[]> criteriaQuery = builder.createQuery(Object[].class);

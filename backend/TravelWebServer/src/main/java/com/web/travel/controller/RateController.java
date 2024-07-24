@@ -3,25 +3,24 @@ package com.web.travel.controller;
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.RateReqDTO;
 import com.web.travel.dto.request.common.RateUpdateReqDTO;
-import com.web.travel.dto.response.RateResDTO;
-import com.web.travel.service.RateService;
+import com.web.travel.service.impl.RateServiceImpl;
+import com.web.travel.service.interfaces.RateService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @CrossOrigin(origins = "*")
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/rate")
 public class RateController {
-    @Autowired
-    RateService rateService;
+    private final RateService rateService;
     @GetMapping("/{tourId}")
     public ResponseEntity<?> getRateByTour(
             Principal principal,

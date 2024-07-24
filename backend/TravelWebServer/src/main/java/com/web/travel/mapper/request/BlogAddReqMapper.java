@@ -6,7 +6,9 @@ import com.web.travel.model.Blog;
 import com.web.travel.model.DestinationBlog;
 import com.web.travel.model.Paragraph;
 import com.web.travel.model.User;
-import com.web.travel.service.UserService;
+import com.web.travel.service.impl.UserServiceImpl;
+import com.web.travel.service.interfaces.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@AllArgsConstructor
 public class BlogAddReqMapper implements Mapper {
-    @Autowired
-    UserService userService;
+    private UserService userService;
+
     @Override
     public Object mapToDTO(Object obj) {
         return null;

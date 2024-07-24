@@ -6,12 +6,14 @@ import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.OrderReqDTO;
 import com.web.travel.model.Order;
 import com.web.travel.model.enums.EOrderStatus;
-import com.web.travel.service.OrderService;
-import com.web.travel.service.email.EmailService;
+import com.web.travel.service.impl.OrderServiceImpl;
+import com.web.travel.service.impl.EmailServiceImpl;
+import com.web.travel.service.interfaces.EmailService;
+import com.web.travel.service.interfaces.OrderService;
 import com.web.travel.service.paypal.PaypalService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,15 +27,15 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/payment")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class PaymentController {
-    @Autowired
-    OrderService orderService;
-    @Autowired
-    EmailService emailService;
-    @Autowired
-    PaypalService paypalService;
+    private final OrderService orderService;
+    private final EmailService emailService;
+    private final PaypalService paypalService;
     @Value("${travel.app.client.host}")
     String clientHost;
+
+
     @PostMapping("/create_payment")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> createPayment(Principal principal, HttpServletRequest request, @RequestBody OrderReqDTO body) throws UnsupportedEncodingException {

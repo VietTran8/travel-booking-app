@@ -1,7 +1,8 @@
 package com.web.travel.controller.admin;
 
-import com.web.travel.dto.ResDTO;
-import com.web.travel.service.StatisticsService;
+import com.web.travel.service.impl.StatisticsServiceImpl;
+import com.web.travel.service.interfaces.StatisticsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -9,17 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/admin/statistic")
+@RequiredArgsConstructor
 public class StatisticsController {
-    @Autowired
-    StatisticsService statisticsService;
+    private final StatisticsService statisticsService;
+
     @GetMapping
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> getStatistics() {

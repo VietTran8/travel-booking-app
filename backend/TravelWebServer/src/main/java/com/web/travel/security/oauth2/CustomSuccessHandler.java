@@ -6,33 +6,32 @@ import com.web.travel.model.User;
 import com.web.travel.payload.request.SignupRequest;
 import com.web.travel.payload.response.SignInResponse;
 import com.web.travel.security.jwt.JwtUtils;
-import com.web.travel.service.UserService;
+import com.web.travel.service.impl.UserServiceImpl;
+import com.web.travel.service.interfaces.UserService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 
 @Component
+@RequiredArgsConstructor
 public class CustomSuccessHandler implements AuthenticationSuccessHandler {
-    @Autowired
-    UserService userService;
-    @Autowired
-    JwtUtils jwtUtils;
+    private final UserService userService;
+    private final JwtUtils jwtUtils;
     @Value("${travel.app.client.host}")
     String clientHost;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         if(authentication.getPrincipal() instanceof DefaultOAuth2User) {

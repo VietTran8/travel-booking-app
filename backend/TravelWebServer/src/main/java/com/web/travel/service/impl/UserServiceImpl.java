@@ -1,4 +1,4 @@
-package com.web.travel.service;
+package com.web.travel.service.impl;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.SaveRecentActivityRequestDTO;
@@ -16,9 +16,11 @@ import com.web.travel.payload.request.SignupRequest;
 import com.web.travel.payload.request.UpdateUserStatusRequest;
 import com.web.travel.repository.*;
 import com.web.travel.service.interfaces.FileUploadService;
+import com.web.travel.service.interfaces.UserService;
 import com.web.travel.utils.DateHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import net.sf.uadetector.ReadableUserAgent;
 import net.sf.uadetector.UserAgentStringParser;
 import net.sf.uadetector.service.UADetectorServiceFactory;
@@ -33,19 +35,16 @@ import java.security.Principal;
 import java.util.*;
 
 @Service
-public class UserService {
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RoleRepository roleRepository;
-    @Autowired
-    TourRepository tourRepository;
-    @Autowired
-    DestinationBlogRepository destinationBlogRepository;
-    @Autowired
-    RecentActivityRepository recentActivityRepository;
-    @Autowired
-    FileUploadService fileUploadService;
+@AllArgsConstructor
+public class UserServiceImpl implements UserService {
+    private UserRepository userRepository;
+    private RoleRepository roleRepository;
+    private TourRepository tourRepository;
+    private DestinationBlogRepository destinationBlogRepository;
+    private RecentActivityRepository recentActivityRepository;
+    private FileUploadService fileUploadService;
+
+    @Override
     public UserByEmailResDTO getUserByEmail(String email){
         User user = userRepository.findByEmail(email).orElse(null);
         return user != null ?
@@ -53,6 +52,7 @@ public class UserService {
                 null;
     }
 
+    @Override
     public void saveUserLoginHistory(HttpServletRequest request, User user){
         String userAgentString = request.getHeader("User-Agent");
         UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
@@ -74,9 +74,13 @@ public class UserService {
         }
         userRepository.save(user);
     }
+
+    @Override
     public boolean userIsExistsByEmail(String email){
         return userRepository.existsByEmail(email);
     }
+
+    @Override
     public User saveDefaultUser(SignupRequest signUpRequest){
         // Create new user's account
         User user = new User(signUpRequest.getFullName(),
@@ -107,13 +111,18 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    @Override
     public User getUserObjectByEmail(String email){
         return userRepository.findByEmail(email).orElse(null);
     }
+
+    @Override
     public User getUserObjectById(Long id){
         return userRepository.findById(id).orElse(null);
     }
 
+    @Override
     public ResDTO updateUserInfo(Principal principal, UserUpdateReqDTO userDto){
         if(principal != null){
             User foundUser = getUserObjectByEmail(principal.getName());
@@ -138,6 +147,7 @@ public class UserService {
         );
     }
 
+    @Override
     public ResDTO updateUserStatus(Principal principal, UpdateUserStatusRequest request){
         if(principal != null){
             if(verifyPassword(principal, request.getPassword())){
@@ -169,6 +179,7 @@ public class UserService {
         );
     }
 
+    @Override
     public ResDTO updateUserAvatar(Principal principal, MultipartFile avatar){
         if(principal != null){
             String avatarName = null;
@@ -202,6 +213,7 @@ public class UserService {
         return new BCryptPasswordEncoder();
     }
 
+    @Override
     public boolean verifyPassword(Principal principal, String rawPassword){
         if(principal != null){
             User foundUser = userRepository.findByEmail(principal.getName()).orElse(null);
@@ -213,6 +225,7 @@ public class UserService {
         return false;
     }
 
+    @Override
     public ResDTO getLoginHistory(Principal principal){
         User foundUser = userRepository.findByEmail(principal.getName()).orElse(null);
         if(foundUser != null)
@@ -239,6 +252,7 @@ public class UserService {
         );
     }
 
+    @Override
     public ResDTO saveRecentActivity(Principal principal, SaveRecentActivityRequestDTO requestDTO){
         if(principal != null){
             User foundUser = userRepository.findByEmail(principal.getName()).orElse(null);
@@ -315,6 +329,7 @@ public class UserService {
         );
     }
 
+    @Override
     public ResDTO getRecentActivity(Principal principal, boolean isGetAll){
         if(principal != null){
             User foundUser = userRepository.findByEmail(principal.getName()).orElse(null);
@@ -380,6 +395,7 @@ public class UserService {
         );
     }
 
+    @Override
     public ResDTO clearRecentActivity(Principal principal){
         if(principal != null){
             User foundUser = userRepository.findByEmail(principal.getName()).orElse(null);
@@ -402,6 +418,7 @@ public class UserService {
         );
     }
 
+    @Override
     public ResDTO deleteRecentActivity(Principal principal, Long id){
         if(principal != null){
             RecentActivity recentActivity = recentActivityRepository.findById(id).orElse(null);

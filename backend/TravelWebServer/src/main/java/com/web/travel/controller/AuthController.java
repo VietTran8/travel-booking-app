@@ -8,12 +8,13 @@ import com.web.travel.model.Role;
 import com.web.travel.model.User;
 import com.web.travel.model.enums.ERole;
 import com.web.travel.payload.request.*;
-import com.web.travel.service.AuthService;
+import com.web.travel.service.impl.AuthServiceImpl;
+import com.web.travel.service.interfaces.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,9 +27,9 @@ import java.util.Map;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
-    @Autowired
-    AuthService authService;
+    private final AuthService authService;
 
     @PostMapping("/signin")
     @CrossOrigin(origins = "*")

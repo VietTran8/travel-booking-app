@@ -1,4 +1,4 @@
-package com.web.travel.service;
+package com.web.travel.service.impl;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.admin.hotel.HotelAddingDTO;
@@ -9,7 +9,9 @@ import com.web.travel.model.Room;
 import com.web.travel.repository.HotelRepository;
 import com.web.travel.repository.RoomRepository;
 import com.web.travel.service.interfaces.FileUploadService;
+import com.web.travel.service.interfaces.HotelService;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,20 +22,23 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
-public class HotelService {
-    @Autowired
-    private HotelRepository repository;
-    @Autowired
-    private FileUploadService fileUploadService;
-    @Autowired
-    private RoomRepository roomRepository;
+@RequiredArgsConstructor
+public class HotelServiceImpl implements HotelService {
+    private final HotelRepository repository;
+    private final FileUploadService fileUploadService;
+    private final RoomRepository roomRepository;
+
+    @Override
     public Hotel getHotelById(long id){
         return repository.findById(id).orElse(null);
     }
+
+    @Override
     public Page<Hotel> getAllHotel(int page, int limit){
         return repository.findAll(PageRequest.of(page, limit));
     }
 
+    @Override
     public ResDTO getAllHotelRes(int page, int limit){
         Map<String, Object> response = new HashMap<>();
         Page<Hotel> result = getAllHotel(page, limit);
@@ -48,6 +53,7 @@ public class HotelService {
         );
     }
 
+    @Override
     public ResDTO addHotel(
             MultipartFile image,
             HotelAddingDTO hotelAddingDTO
@@ -74,6 +80,7 @@ public class HotelService {
         );
     }
 
+    @Override
     public ResDTO updateHotel(Long id, MultipartFile image,
                        HotelAddingDTO hotelAddingDTO
     ){
@@ -121,6 +128,7 @@ public class HotelService {
                 null);
     }
 
+    @Override
     public ResDTO deleteHotel(Long id){
         Optional<Hotel> optionalHotel = repository.findById(id);
         if(optionalHotel.isPresent()){
@@ -140,6 +148,7 @@ public class HotelService {
         );
     }
 
+    @Override
     public ResDTO getByAddress(String address){
         List<Hotel> hotels = repository.findByAddressContaining(address);
         return new ResDTO(

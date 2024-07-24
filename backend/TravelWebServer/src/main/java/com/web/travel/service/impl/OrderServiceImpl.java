@@ -1,4 +1,4 @@
-package com.web.travel.service;
+package com.web.travel.service.impl;
 
 import com.paypal.api.payments.Links;
 import com.paypal.api.payments.Payment;
@@ -17,14 +17,13 @@ import com.web.travel.model.User;
 import com.web.travel.model.enums.EOrderStatus;
 import com.web.travel.repository.OrderRepository;
 import com.web.travel.repository.TourDateRepository;
-import com.web.travel.service.email.EmailService;
+import com.web.travel.service.interfaces.*;
 import com.web.travel.service.paypal.PaypalService;
 import com.web.travel.service.vnpay.VnPayService;
 import com.web.travel.utils.DateHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -37,35 +36,33 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService {
-    @Autowired
-    OrderRepository orderRepository;
-    @Autowired
-    UserService userService;
-    @Autowired
-    EmailService emailService;
-    @Autowired
-    TourDateRepository tourDateRepository;
-    @Autowired
-    VnPayService vnPayService;
-    @Autowired
-    PaypalService paypalService;
-    @Autowired
-    OrderReqMapper orderReqMapper;
-    @Autowired
-    ContactInfoService contactInfoService;
-    @Autowired
-    TourService tourService;
+public class OrderServiceImpl implements OrderService {
+    private final OrderRepository orderRepository;
+    private final UserService userService;
+    private final EmailService emailService;
+    private final TourDateRepository tourDateRepository;
+    private final VnPayService vnPayService;
+    private final PaypalService paypalService;
+    private final OrderReqMapper orderReqMapper;
+    private final ContactInfoService contactInfoService;
+    private final TourService tourService;
 
+    @Override
     public Order saveOrder(Order order){
         return orderRepository.save(order);
     }
+
+    @Override
     public List<Order> getAll(){
         return orderRepository.findAll();
     }
+
+    @Override
     public Order getById(Long id){
         return orderRepository.findById(id).orElse(null);
     }
+
+    @Override
     public List<OrderDetailResDTO> getByUser(String userEmail){
         User user = userService.getUserObjectByEmail(userEmail);
         List<Order> orders = orderRepository.findByUserOrderByOrderDateDesc(user);
@@ -76,6 +73,7 @@ public class OrderService {
         }).collect(Collectors.toList());
     }
 
+    @Override
     public ResDTO getOrderResById(Long id){
         Order foundOrder = orderRepository.findById(id).orElse(null);
         OrderDetailResDTO responseData = null;
@@ -97,6 +95,7 @@ public class OrderService {
         );
     }
 
+    @Override
     public Map<String, Object> getAllResponse(int page, int limit){
         Page<Order> orders = orderRepository.findAllByOrderByOrderDateDesc(PageRequest.of(page - 1, limit));
 
@@ -113,6 +112,7 @@ public class OrderService {
         return response;
     }
 
+    @Override
     public ResDTO createPayment(Principal principal, HttpServletRequest request, @RequestBody OrderReqDTO body, boolean isApp) throws UnsupportedEncodingException {
         long amount = (long) Math.round(body.getAmount());
         String ipAddress = request.getRemoteAddr();
@@ -211,6 +211,7 @@ public class OrderService {
         );
     }
 
+    @Override
     public ResDTO updateOrderStatus(Principal principal, boolean isUserUpdate, OrderUpdateReqDTO dto){
         Order order = getById(dto.getId());
         if(order != null){

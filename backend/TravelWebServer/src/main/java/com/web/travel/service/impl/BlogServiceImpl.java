@@ -1,4 +1,4 @@
-package com.web.travel.service;
+package com.web.travel.service.impl;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.admin.blog.BlogAddingReqDTO;
@@ -15,8 +15,10 @@ import com.web.travel.repository.DestinationBlogRepository;
 import com.web.travel.repository.ParagraphRepository;
 import com.web.travel.repository.custom.CustomDestinationBlogRepository;
 import com.web.travel.service.cloudinary.FilesValidation;
+import com.web.travel.service.interfaces.BlogService;
 import com.web.travel.service.interfaces.FileUploadService;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,25 +28,21 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.*;
+import java.util.stream.Stream;
 
 @Service
-public class BlogService {
-    @Autowired
-    BlogRepository blogRepository;
-    @Autowired
-    DestinationBlogRepository desRepository;
-    @Autowired
-    CustomDestinationBlogRepository customDesBlogRepository;
-    @Autowired
-    BlogAddReqMapper mapper;
-    @Autowired
-    FileUploadService fileUploadService;
-    @Autowired
-    ParagraphRepository paragraphRepository;
-    @Autowired
-    DesBlogDetailResMapper desBlogDetailResMapper;
-    @Autowired
-    FilesValidation fileValidator;
+@RequiredArgsConstructor
+public class BlogServiceImpl implements BlogService {
+    private final BlogRepository blogRepository;
+    private final DestinationBlogRepository desRepository;
+    private final CustomDestinationBlogRepository customDesBlogRepository;
+    private final BlogAddReqMapper mapper;
+    private final FileUploadService fileUploadService;
+    private final ParagraphRepository paragraphRepository;
+    private final DesBlogDetailResMapper desBlogDetailResMapper;
+    private final FilesValidation fileValidator;
+
+    @Override
     public Map<String, Object> getAllDestinationBlog(int page, int limit, boolean isAdmin){
         Page<DestinationBlog> list;
         if(!isAdmin)
@@ -55,26 +53,15 @@ public class BlogService {
 
         int pages = list.getTotalPages();
 
-        List<DestinationBlogResDTO> listDTO = list.stream().map(blog -> {
-            Mapper mapper = new DestinationBlogResMapper();
-            DestinationBlogResDTO dto = (DestinationBlogResDTO) mapper.mapToDTO(blog);
-            Paragraph paragraph = blog.getBlog().getParagraphs().stream().toList().get(0);
-            dto.setDescription(paragraph.getContent());
-            return dto;
-        }).toList();
+        List<DestinationBlogResDTO> listDTO = mapToDtoList(list.stream());
 
         result.put("pages", pages);
         result.put("posts", listDTO);
         return result;
     }
 
-    public long getDesBlogCount(){
-        return desRepository.count();
-    }
-
-    public List<DestinationBlogResDTO> getTopLatestPosts(int top){
-        List<DestinationBlog> top4LatestBlogs = customDesBlogRepository.findTopLatestPosts(4);
-        return top4LatestBlogs.stream().map(blog -> {
+    static List<DestinationBlogResDTO> mapToDtoList(Stream<DestinationBlog> blogs) {
+        return blogs.map(blog -> {
             Mapper mapper = new DestinationBlogResMapper();
             DestinationBlogResDTO dto = (DestinationBlogResDTO) mapper.mapToDTO(blog);
             Paragraph paragraph = blog.getBlog().getParagraphs().stream().toList().get(0);
@@ -83,6 +70,18 @@ public class BlogService {
         }).toList();
     }
 
+    @Override
+    public long getDesBlogCount(){
+        return desRepository.count();
+    }
+
+    @Override
+    public List<DestinationBlogResDTO> getTopLatestPosts(int top){
+        List<DestinationBlog> top4LatestBlogs = customDesBlogRepository.findTopLatestPosts(4);
+        return mapToDtoList(top4LatestBlogs.stream());
+    }
+
+    @Override
     public ResDTO getBlogsByKeyword(String keyword, int page, int limit){
         ResDTO response = new ResDTO();
         response.setCode(HttpServletResponse.SC_OK);
@@ -109,6 +108,7 @@ public class BlogService {
         return response;
     }
 
+    @Override
     public List<Map<String, Object>> getListAuthorDesc(){
         List<User> authors = customDesBlogRepository.findTopAuthor();
         List<Map<String, Object>> result = new ArrayList<>();
@@ -121,10 +121,12 @@ public class BlogService {
         return result;
     }
 
+    @Override
     public DestinationBlog findBlogById(long id){
         return desRepository.findById(id).orElse(null);
     }
 
+    @Override
     public ResDTO getResById(long id){
         DesBlogDetailResDTO dto;
         Optional<DestinationBlog> foundBlog = desRepository.findById(id);
@@ -164,6 +166,7 @@ public class BlogService {
         }
     }
 
+    @Override
     public DesBlogDetailResDTO getBlogDetailDTOById(Long id){
         DesBlogDetailResDTO dto;
         Optional<DestinationBlog> foundBlog = desRepository.findById(id);
@@ -178,6 +181,7 @@ public class BlogService {
 
     }
 
+    @Override
     public ResDTO addBlog(Principal principal, BlogAddingReqDTO blogDto, MultipartFile[] images){
         blogDto.setUserEmail(principal.getName());
         DestinationBlog blog = (DestinationBlog) mapper.mapToObject(blogDto);
@@ -218,6 +222,7 @@ public class BlogService {
         );
     }
 
+    @Override
     public ResDTO updateBlog(Long id, Principal principal, BlogAddingReqDTO blogDto, MultipartFile[] images){
         blogDto.setUserEmail(principal.getName());
         DestinationBlog blog = (DestinationBlog) mapper.mapToObject(blogDto);
@@ -292,6 +297,7 @@ public class BlogService {
         );
     }
 
+    @Override
     public ResDTO deleteBlog(Long id) {
         DestinationBlog delBlog = desRepository.findById(id).orElse(null);
         if (delBlog != null) {
@@ -311,6 +317,7 @@ public class BlogService {
         );
     }
 
+    @Override
     public ResDTO addBlogView(long id){
         DestinationBlog foundBlog = findBlogById(id);
         if(foundBlog != null){
@@ -331,6 +338,7 @@ public class BlogService {
         );
     }
 
+    @Override
     public ResDTO getTopBlog(){
         List<DestinationBlog> foundBlogs = desRepository.findTop6ByOrderByViewsDesc();
         List<DestinationBlogResDTO> resDTOS = foundBlogs

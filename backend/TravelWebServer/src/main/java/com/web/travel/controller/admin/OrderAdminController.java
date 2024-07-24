@@ -2,10 +2,11 @@ package com.web.travel.controller.admin;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.OrderUpdateReqDTO;
-import com.web.travel.service.OrderService;
-import com.web.travel.service.email.EmailService;
+import com.web.travel.service.impl.EmailServiceImpl;
+import com.web.travel.service.interfaces.EmailService;
+import com.web.travel.service.interfaces.OrderService;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,12 +15,11 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/admin/order")
 @CrossOrigin(origins = "*")
-
+@RequiredArgsConstructor
 public class OrderAdminController {
-    @Autowired
-    OrderService orderService;
-    @Autowired
-    EmailService emailService;
+    private final OrderService orderService;
+    private final EmailService emailService;
+
     @PostMapping("/update")
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> updateOrderStatus(Principal principal,  @RequestBody OrderUpdateReqDTO orderDto){

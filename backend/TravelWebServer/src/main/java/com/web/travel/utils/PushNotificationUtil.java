@@ -7,7 +7,6 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class PushNotificationUtil {
-
     public static final String REST_API_KEY = "NDc5YTVhNTktYmE2Yy00NmFhLWE2ZGQtZDgwY2IwZjE0ODQ1";
     public static final String APP_ID = "a0f4fabe-9b2a-432e-8233-c944f2edcfcb";
 

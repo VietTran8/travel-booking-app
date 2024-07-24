@@ -4,10 +4,11 @@ import com.web.travel.dto.ResDTO;
 import com.web.travel.payload.request.NewPasswordRequest;
 import com.web.travel.payload.request.MailRequest;
 import com.web.travel.payload.request.MailResetPasswordRequest;
-import com.web.travel.service.AuthService;
-import com.web.travel.service.email.EmailService;
+import com.web.travel.service.impl.EmailServiceImpl;
+import com.web.travel.service.interfaces.AuthService;
+import com.web.travel.service.interfaces.EmailService;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +21,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/reset-password")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class ResetPasswordController {
-    @Autowired
-    EmailService emailService;
-    @Autowired
-    AuthService authService;
+    private final EmailService emailService;
+    private final AuthService authService;
     @Value("${travel.app.client.host}")
     String clientHost;
 

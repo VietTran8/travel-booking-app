@@ -1,8 +1,8 @@
 package com.web.travel.controller;
 
-import com.web.travel.dto.ResDTO;
 import com.web.travel.model.Message;
-import com.web.travel.service.MessageService;
+import com.web.travel.service.impl.MessageServiceImpl;
+import com.web.travel.service.interfaces.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

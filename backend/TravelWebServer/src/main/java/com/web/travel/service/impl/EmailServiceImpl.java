@@ -1,4 +1,4 @@
-package com.web.travel.service.email;
+package com.web.travel.service.impl;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -14,12 +14,13 @@ import com.web.travel.model.enums.EPaymentMethod;
 import com.web.travel.model.enums.ERoom;
 import com.web.travel.payload.response.MessageResponse;
 import com.web.travel.repository.TourBlogRepository;
+import com.web.travel.service.interfaces.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
 import com.web.travel.payload.request.MailRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -30,15 +31,15 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 @Service
-public class EmailService {
-    @Autowired
-    private JavaMailSender sender;
-    @Autowired
-    private Configuration config;
-    @Autowired
-    private TourBlogRepository blogRepository;
+@RequiredArgsConstructor
+public class EmailServiceImpl implements EmailService {
+    private final JavaMailSender sender;
+    private final Configuration config;
+    private final TourBlogRepository blogRepository;
     @Value("${travel.app.client.host}")
     private String clientHost;
+
+    @Override
     public ResDTO sendWelcomeEmail(MailRequest request) {
         ResDTO response = new ResDTO();
         response.setData(null);
@@ -69,6 +70,7 @@ public class EmailService {
         return response;
     }
 
+    @Override
     public ResDTO sendResetPasswordEmail(MailRequest request, Map<String, Object> model) {
         ResDTO response = new ResDTO();
         response.setData(null);
@@ -98,6 +100,7 @@ public class EmailService {
     }
 
     @Async
+    @Override
     public void sendConfirmationEmail(String email, String userFullName, String token, String confirmationCode){
         MessageResponse response = new MessageResponse();
 
@@ -145,6 +148,7 @@ public class EmailService {
 
 
     @Async
+    @Override
     public void sendOrderedEmail(Order order, boolean isOnline){
         MessageResponse response = new MessageResponse();
 
@@ -231,6 +235,7 @@ public class EmailService {
     }
 
     @Async
+    @Override
     public void sendCanceledEmail(Order order){
         MessageResponse response = new MessageResponse();
 

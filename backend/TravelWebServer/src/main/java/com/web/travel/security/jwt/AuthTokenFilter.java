@@ -2,14 +2,15 @@ package com.web.travel.security.jwt;
 
 import java.io.IOException;
 
-import com.web.travel.security.services.UserDetailsImpl;
 import com.web.travel.security.services.UserDetailsServiceImpl;
-import com.web.travel.service.AuthService;
+import com.web.travel.service.impl.AuthServiceImpl;
+import com.web.travel.service.interfaces.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +18,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+@Component
 public class AuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtils jwtUtils;
@@ -27,7 +30,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
     private AuthService authService;
-
     private static final Logger logger = LoggerFactory.getLogger(AuthTokenFilter.class);
 
     @Override

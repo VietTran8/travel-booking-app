@@ -3,10 +3,12 @@ package com.web.travel.controller;
 import com.web.travel.dto.ResDTO;
 import com.web.travel.model.Order;
 import com.web.travel.repository.OrderRepository;
-import com.web.travel.service.AuthService;
+import com.web.travel.service.impl.AuthServiceImpl;
+import com.web.travel.service.interfaces.AuthService;
 import com.web.travel.service.interfaces.FileUploadService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,13 +20,12 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/test")
+@RequiredArgsConstructor
 public class TestController {
-    @Autowired
-    private AuthService authService;
-    @Autowired
-    private FileUploadService fileUploadService;
-    @Autowired
-    OrderRepository orderRepository;
+    private final AuthService authService;
+    private final FileUploadService fileUploadService;
+    private final OrderRepository orderRepository;
+
     @GetMapping("/all")
     public String allAccess() {
         return "Public Content.";

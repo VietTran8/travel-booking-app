@@ -1,10 +1,12 @@
-package com.web.travel.service;
+package com.web.travel.service.impl;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.model.Message;
 import com.web.travel.model.User;
 import com.web.travel.payload.response.ChatRoomResponse;
 import com.web.travel.repository.MessageRepository;
+import com.web.travel.service.interfaces.MessageService;
+import com.web.travel.service.interfaces.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,17 +18,21 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class MessageService {
+public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final UserService userService;
 
+    @Override
     public List<Message> getMessages(Long room){
         return messageRepository.findAllByRoom(room);
     }
+
+    @Override
     public Message saveMessage(Message message){
         return messageRepository.save(message);
     }
 
+    @Override
     public ResDTO getRooms(){
         List<Long> rooms = messageRepository.findRooms();
         List<ChatRoomResponse> response = new ArrayList<>();

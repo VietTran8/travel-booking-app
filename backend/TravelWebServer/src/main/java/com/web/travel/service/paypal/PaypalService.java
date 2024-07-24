@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,13 +21,14 @@ import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 
 @Service
+@RequiredArgsConstructor
 public class PaypalService {
     public static String SUCCESS_URL = "http://localhost:8080/api/payment/success";
     public static String CANCEL_URL = "http://localhost:8080/api/payment/cancel";
     @Value("${travel.app.server.ip}")
     public String ANDROID_SERVER_IP;
-    @Autowired
-    private APIContext apiContext;
+    private final APIContext apiContext;
+
     public Payment createPayment(Double total, Map<String, Long> idParams, String sessionToken, boolean isApp) throws PayPalRESTException{
         Amount amount = new Amount();
         amount.setCurrency("USD");

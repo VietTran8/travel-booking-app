@@ -1,11 +1,9 @@
-package com.web.travel.service;
+package com.web.travel.service.impl;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.RateReqDTO;
 import com.web.travel.dto.request.common.RateUpdateReqDTO;
-import com.web.travel.dto.response.ListTourResDTO;
 import com.web.travel.dto.response.RateResDTO;
-import com.web.travel.mapper.Mapper;
 import com.web.travel.mapper.request.RateReqMapper;
 import com.web.travel.mapper.response.RateResMapper;
 import com.web.travel.model.DestinationBlog;
@@ -17,10 +15,10 @@ import com.web.travel.repository.RateRepository;
 import com.web.travel.repository.TourRepository;
 import com.web.travel.repository.UserRepository;
 import com.web.travel.repository.custom.CustomRateRepository;
+import com.web.travel.service.interfaces.RateService;
 import com.web.travel.utils.DateHandler;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -30,24 +28,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.ObjIntConsumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class RateService {
-    @Autowired
-    TourRepository tourRepository;
-    @Autowired
-    RateRepository rateRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    DestinationBlogRepository desRepository;
-    @Autowired
-    CustomRateRepository customRateRepository;
-    @Autowired
-    RateReqMapper reqMapper;
+@RequiredArgsConstructor
+public class RateServiceImpl implements RateService {
+    private final TourRepository tourRepository;
+    private final RateRepository rateRepository;
+    private final UserRepository userRepository;
+    private final DestinationBlogRepository desRepository;
+    private final CustomRateRepository customRateRepository;
+    private final RateReqMapper reqMapper;
+
+    @Override
     public Map<String, Object> getRates(Principal principal, long id, int page, int limit, boolean isByTour){
         Tour foundTour = null;
         DestinationBlog foundBlog = null;
@@ -105,6 +98,7 @@ public class RateService {
         return null;
     }
 
+    @Override
     public ResDTO addRate(Principal principal, RateReqDTO ratingDTO){
         Rate rate = (Rate) reqMapper.mapToObject(ratingDTO);
         rate.setUser(userRepository.findByEmail(principal.getName()).orElse(null));
@@ -125,6 +119,7 @@ public class RateService {
         );
     }
 
+    @Override
     public ResDTO updateRate(Principal principal, RateUpdateReqDTO ratingDTO){
         Rate needUpdateRate = rateRepository.findById(ratingDTO.getId()).orElse(null);
         if (needUpdateRate != null){
@@ -164,6 +159,7 @@ public class RateService {
         );
     }
 
+    @Override
     public ResDTO deleteRate(Principal principal, long rateId){
         Rate rate = rateRepository.findById(rateId).orElse(null);
         if(rate != null) {
@@ -193,6 +189,7 @@ public class RateService {
         );
     }
 
+    @Override
     public RateStatistic getStarStatisticByTour(Tour tour){
         if(tour != null){
             return customRateRepository.findRateStatisticByTour(tour);

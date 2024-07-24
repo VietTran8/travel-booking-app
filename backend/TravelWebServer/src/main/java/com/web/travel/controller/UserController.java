@@ -6,7 +6,9 @@ import com.web.travel.dto.request.common.UserByEmailReqDTO;
 import com.web.travel.dto.request.common.UserUpdateReqDTO;
 import com.web.travel.dto.response.UserByEmailResDTO;
 import com.web.travel.payload.request.UpdateUserStatusRequest;
-import com.web.travel.service.UserService;
+import com.web.travel.service.impl.UserServiceImpl;
+import com.web.travel.service.interfaces.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +20,9 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin(origins = "*")
+@AllArgsConstructor
 public class UserController {
-    @Autowired
-    UserService service;
+    private UserService service;
     @PostMapping("/get-by-email")
     public ResponseEntity<ResDTO> getUserById(@RequestBody UserByEmailReqDTO user){
         UserByEmailResDTO foundUser = service.getUserByEmail(user.getEmail());

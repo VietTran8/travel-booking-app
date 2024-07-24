@@ -2,8 +2,10 @@ package com.web.travel.controller.admin;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.admin.blog.BlogAddingReqDTO;
-import com.web.travel.service.BlogService;
+import com.web.travel.service.impl.BlogServiceImpl;
+import com.web.travel.service.interfaces.BlogService;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +16,9 @@ import java.security.Principal;
 @RestController
 @RequestMapping("api/admin/blog")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class BlogAdminController {
-    @Autowired
-    BlogService blogService;
+    private final BlogService blogService;
 
     @GetMapping("")
     public ResponseEntity<?> getAll(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,

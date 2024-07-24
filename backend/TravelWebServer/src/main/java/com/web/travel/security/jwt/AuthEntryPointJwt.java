@@ -7,18 +7,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.web.travel.dto.ResDTO;
-import com.web.travel.payload.response.AuthResponse;
-import com.web.travel.payload.response.MessageResponse;
-import com.web.travel.service.AuthService;
-import com.web.travel.service.email.EmailService;
+import com.web.travel.service.impl.EmailServiceImpl;
+import com.web.travel.service.interfaces.EmailService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AccountStatusException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -26,13 +27,11 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
+@RequiredArgsConstructor
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
-
     private static final Logger logger = LoggerFactory.getLogger(AuthEntryPointJwt.class);
-    @Autowired
-    EmailService emailService;
-    @Autowired
-    JwtUtils jwtUtils;
+    private final EmailService emailService;
+    private final JwtUtils jwtUtils;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
@@ -50,12 +49,13 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         body.put("path", request.getServletPath());
 
         String message = "";
-        if(authException.getMessage().equals("Bad credentials")){
+        if(authException instanceof BadCredentialsException){
             message = "Sai email hoặc mật khẩu";
-        }else if (authException.getMessage().equals("Full authentication is required to access this resource")){
+        }else if (authException instanceof InsufficientAuthenticationException){
             message = "Vui lòng đăng nhập!";
-        }else if (authException.getMessage().equals("User account is locked")){
+        }else if (authException instanceof AccountStatusException){
             response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+
             code = HttpServletResponse.SC_NOT_ACCEPTABLE;
             message = "Tài khoản của bạn đã bị vô hiệu hóa";
 
@@ -64,6 +64,7 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 
             String confirmationCode = generateConfirmationCode();
             String token = encodeResetPasswordToken(createConfirmationCodeToken(email, confirmationCode));
+
             emailService.sendConfirmationEmail(email, fullName, token, confirmationCode);
             body.put("activateToken", token);
         }
@@ -79,7 +80,7 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         mapper.writeValue(response.getOutputStream(), authResponse);
     }
 
-    public String generateConfirmationCode(){
+    private String generateConfirmationCode(){
         SecureRandom rd = new SecureRandom();
         int min = 100000,
                 max = 999999;
@@ -87,12 +88,12 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         return String.valueOf(randomNumber);
     }
 
-    public String encodeResetPasswordToken(String token){
+    private String encodeResetPasswordToken(String token){
         Base64.Encoder encoder = Base64.getEncoder().withoutPadding();
         return encoder.encodeToString(token.getBytes());
     }
 
-    public String createConfirmationCodeToken(String email, String confirmationCode){
+    private String createConfirmationCodeToken(String email, String confirmationCode){
         return jwtUtils.generateJwtConfirmationToken(email, confirmationCode);
     }
 }

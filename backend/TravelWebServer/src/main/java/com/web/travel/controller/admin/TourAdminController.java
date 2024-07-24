@@ -2,7 +2,8 @@ package com.web.travel.controller.admin;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.admin.tour.TourAddingDTO;
-import com.web.travel.service.TourService;
+import com.web.travel.service.impl.TourServiceImpl;
+import com.web.travel.service.interfaces.TourService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

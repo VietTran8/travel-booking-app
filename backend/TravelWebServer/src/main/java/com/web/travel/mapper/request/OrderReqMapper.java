@@ -10,17 +10,16 @@ import com.web.travel.repository.HotelRepository;
 import com.web.travel.repository.TourDateRepository;
 import com.web.travel.repository.TourRepository;
 import com.web.travel.utils.DateHandler;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@AllArgsConstructor
 public class OrderReqMapper implements Mapper {
-    @Autowired
-    TourRepository tourRepository;
-    @Autowired
-    TourDateRepository tourDateRepository;
-    @Autowired
-    HotelRepository hotelRepository;
+    private TourRepository tourRepository;
+    private TourDateRepository tourDateRepository;
+    private HotelRepository hotelRepository;
 
     @Override
     public Object mapToDTO(Object obj) {

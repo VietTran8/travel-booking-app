@@ -2,7 +2,8 @@ package com.web.travel.controller.admin;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.admin.hotel.HotelAddingDTO;
-import com.web.travel.service.HotelService;
+import com.web.travel.service.impl.HotelServiceImpl;
+import com.web.travel.service.interfaces.HotelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

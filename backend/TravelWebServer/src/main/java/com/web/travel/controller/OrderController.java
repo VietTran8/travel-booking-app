@@ -2,10 +2,11 @@ package com.web.travel.controller;
 
 import com.web.travel.dto.ResDTO;
 import com.web.travel.dto.request.common.OrderUpdateReqDTO;
-import com.web.travel.service.OrderService;
+import com.web.travel.service.impl.OrderServiceImpl;
+import com.web.travel.service.interfaces.OrderService;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,9 +15,9 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/order")
 @CrossOrigin(origins = "*")
+@RequiredArgsConstructor
 public class OrderController {
-    @Autowired
-    OrderService orderService;
+    private final OrderService orderService;
     @GetMapping
     public ResponseEntity<?> getOrdersByUser(Principal principal){
         return ResponseEntity.ok(
