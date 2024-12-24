@@ -5,6 +5,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.web.travel.dto.ResDTO;
+import com.web.travel.exception.NotFoundException;
 import com.web.travel.mapper.response.SignInResMapper;
 import com.web.travel.model.LoginHistory;
 import com.web.travel.model.enums.ERole;
@@ -22,6 +23,7 @@ import com.web.travel.security.services.UserDetailsImpl;
 import com.web.travel.service.interfaces.AuthService;
 import com.web.travel.service.interfaces.EmailService;
 import com.web.travel.service.interfaces.UserService;
+import com.web.travel.utils.Constants;
 import com.web.travel.utils.DateHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -416,11 +418,7 @@ public class AuthServiceImpl implements AuthService {
                     null
             );
         }
-        return new ResDTO(
-                HttpServletResponse.SC_BAD_REQUEST,
-                false,
-                "Tài khoản không tồn tại trong hệ thống!",
-                null
-        );
+
+        throw new NotFoundException(Constants.ERROR_CODE.NOT_FOUND_ACCOUNT);
     }
 }

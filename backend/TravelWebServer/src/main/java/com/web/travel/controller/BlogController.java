@@ -77,14 +77,8 @@ public class BlogController {
     @CrossOrigin(origins = "*")
     public ResponseEntity<?> getBlogById(@PathVariable long id){
         ResDTO response = blogService.getResById(id);
-        if(response.isStatus()){
-            return ResponseEntity.ok(
-                    response
-            );
-        }
-        return ResponseEntity.badRequest().body(
-                response
-        );
+
+        return ResponseEntity.status(response.getCode()).body(response);
     }
 
     @PostMapping("/add-view/{id}")

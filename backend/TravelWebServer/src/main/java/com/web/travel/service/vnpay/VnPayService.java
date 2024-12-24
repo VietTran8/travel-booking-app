@@ -79,6 +79,7 @@ public class VnPayService {
         String vnp_SecureHash = VnPayConfig.hmacSHA512(VnPayConfig.secretKey, hashData.toString());
         queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
         String paymentUrl = VnPayConfig.vnp_PayUrl + "?" + queryUrl;
+
         return new ResDTO(HttpServletResponse.SC_OK, true, "Đặt tour thành công!", paymentUrl);
     }
 }

@@ -30,37 +30,62 @@ public class PaypalService {
     private final APIContext apiContext;
 
     public Payment createPayment(Double total, Map<String, Long> idParams, String sessionToken, boolean isApp) throws PayPalRESTException{
-        Amount amount = new Amount();
-        amount.setCurrency("USD");
-        total = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP).doubleValue();
-        amount.setTotal(String.format("%.2f", total));
+        Payment payment = getPayment(total);
 
-        Transaction transaction = new Transaction();
-        transaction.setDescription("Pay your tour order");
-        transaction.setAmount(amount);
+        RedirectUrls redirectUrls = new RedirectUrls();
+        redirectUrls.setCancelUrl((!isApp ? CANCEL_URL : "http://"+ ANDROID_SERVER_IP +":8080/api/payment/cancel") + "/" + idParams.get("orderId") + "/" + sessionToken + "/" + idParams.get("tourId") + "/" + idParams.get("tourDateId") + "/" + isApp);
+        redirectUrls.setReturnUrl((!isApp ? SUCCESS_URL : "http://"+ ANDROID_SERVER_IP +":8080/api/payment/success") + "/" + idParams.get("orderId") + "/" + sessionToken + "/" + idParams.get("tourId") + "/" + idParams.get("tourDateId") + "/" + isApp);
 
-        List<Transaction> transactions = new ArrayList<>();
-        transactions.add(transaction);
+        payment.setRedirectUrls(redirectUrls);
 
+        return payment.create(apiContext);
+    }
+
+    private Payer getPayer() {
         Payer payer = new Payer();
         payer.setPaymentMethod("paypal");
+
+        return payer;
+    }
+
+    private Payment getPayment(Double total) {
+        Amount amount = getAmount(total);
+        List<Transaction> transactions = getTransactions(amount);
+        Payer payer = getPayer();
 
         Payment payment = new Payment();
         payment.setIntent("sale");
         payment.setPayer(payer);
         payment.setTransactions(transactions);
-        RedirectUrls redirectUrls = new RedirectUrls();
-        redirectUrls.setCancelUrl((!isApp ? CANCEL_URL : "http://"+ ANDROID_SERVER_IP +":8080/api/payment/cancel") + "/" + idParams.get("orderId") + "/" + sessionToken + "/" + idParams.get("tourId") + "/" + idParams.get("tourDateId") + "/" + isApp);
-        redirectUrls.setReturnUrl((!isApp ? SUCCESS_URL : "http://"+ ANDROID_SERVER_IP +":8080/api/payment/success") + "/" + idParams.get("orderId") + "/" + sessionToken + "/" + idParams.get("tourId") + "/" + idParams.get("tourDateId") + "/" + isApp);
-        payment.setRedirectUrls(redirectUrls);
 
-        return payment.create(apiContext);
+        return payment;
     }
+
+    private static List<Transaction> getTransactions(Amount amount) {
+        Transaction transaction = new Transaction();
+        transaction.setDescription("Pay your tour order");
+        transaction.setAmount(amount);
+
+        return List.of(transaction);
+    }
+
+    private static Amount getAmount(Double total) {
+        Amount amount = new Amount();
+
+        amount.setCurrency("USD");
+        total = new BigDecimal(total).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        amount.setTotal(String.format("%.2f", total));
+
+        return amount;
+    }
+
     public Payment executePayment(String paymentId, String payerId) throws PayPalRESTException{
         Payment payment = new Payment();
+
         payment.setId(paymentId);
         PaymentExecution paymentExecute = new PaymentExecution();
         paymentExecute.setPayerId(payerId);
+
         return payment.execute(apiContext, paymentExecute);
     }
 }

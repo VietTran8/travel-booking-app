@@ -52,7 +52,6 @@ public class PaymentController {
         return response.isStatus() ? ResponseEntity.ok(response) : ResponseEntity.badRequest().body(response);
     }
 
-
     @GetMapping("/return/{orderId}/{sessionToken}/{tourId}/{tourDateId}/{isApp}")
     @CrossOrigin(origins = "*")
     public Object thankYou(
@@ -86,7 +85,6 @@ public class PaymentController {
                     "S.status="+ status +";" +
                     "end";
 
-        System.out.println(responseCode);
         response.setHeader("Location", url);
         response.setStatus(HttpServletResponse.SC_FOUND);
         response.sendRedirect(url);
