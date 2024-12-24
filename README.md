@@ -58,6 +58,7 @@
 * Multiple payment methods:
   * Cash
   * VNPay
+  * Paypal
 * Secure payment processing
 * Payment status tracking
 * Invoice generation
